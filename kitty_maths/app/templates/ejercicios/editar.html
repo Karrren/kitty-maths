@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}Editar ejercicio - {{ ejercicio.subtema_nombre }}{% endblock %}
 {% block content %}
 <main class="content">
@@ -13,6 +14,7 @@
         <span>Editar ejercicio</span>
     </nav>
 
+    {{ kitty('ensenar') }}
     <h1>✏️ Editar ejercicio</h1>
     <p style="color:var(--gris);margin-bottom:1.5rem">Subtema <strong>{{ ejercicio.subtema_nombre }}</strong></p>
 
@@ -76,7 +78,7 @@
                         <select id="dificultad" name="dificultad"
                                 style="width:100%;padding:.6rem .9rem;border:2px solid #ede9fe;border-radius:10px;margin-bottom:1.1rem">
                             <option value="facil" {% if dif == 'facil' %}selected{% endif %}>Fácil</option>
-                            <option value="media" {% if dif == 'media' %}selected{% endif %}>Media</option>
+                            <option value="medio" {% if dif == 'medio' %}selected{% endif %}>Media</option>
                             <option value="dificil" {% if dif == 'dificil' %}selected{% endif %}>Difícil</option>
                         </select>
                     </div>

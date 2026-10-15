@@ -1,0 +1,194 @@
+{#
+  Gatico animado de KittyMaths.
+  Uso:  {% from '_kitty.html' import kitty %}
+        {{ kitty('leer') }}            escena fija
+        {{ kitty(tema=subtema.tema_id) }}  escena según el tema del módulo
+  Escenas: saludar, leer, escribir, graficas, lupa, dados, ensenar, pensar, celebrar
+  Las animaciones están en style.css (sección GATICO ANIMADO).
+#}
+{% macro kitty(escena=None, tema=None, clase='kitty-hero') %}
+{% set escenas_tema = {1: 'leer', 2: 'graficas', 3: 'escribir', 4: 'lupa', 5: 'dados'} %}
+{% set escena = escena or escenas_tema.get(tema, 'leer') %}
+<div class="{{ clase }}" aria-hidden="true">
+<svg class="kitty kitty-{{ escena }}" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  {% if escena == 'ensenar' %}
+  <!-- Tablero -->
+  <rect x="4" y="34" width="84" height="62" rx="4" fill="#1f4037" stroke="#a16207" stroke-width="4"/>
+  <text x="12" y="56" class="k-chalk k-chalk-1">x̄ = Σx / n</text>
+  <path class="k-chalk-line" d="M12 82 q9 -16 18 0 t18 0 t18 0" />
+  <rect x="34" y="96" width="24" height="4" rx="2" fill="#a16207"/>
+  {% endif %}
+
+  {% if escena == 'pensar' %}
+  <g class="k-think">
+    <circle cx="142" cy="52" r="4" class="k-bubble"/>
+    <circle cx="153" cy="38" r="6" class="k-bubble"/>
+    <circle cx="172" cy="20" r="16" class="k-bubble"/>
+    <text x="172" y="27" text-anchor="middle" class="k-qmark">?</text>
+  </g>
+  {% endif %}
+
+  {% if escena == 'celebrar' %}
+  <g class="k-confetti-all">
+    <rect class="k-confetti" x="20"  y="0" width="6" height="10" fill="#ec4899" style="animation-delay:0s"/>
+    <rect class="k-confetti" x="50"  y="0" width="6" height="10" fill="#22d3ee" style="animation-delay:.6s"/>
+    <rect class="k-confetti" x="150" y="0" width="6" height="10" fill="#facc15" style="animation-delay:.3s"/>
+    <rect class="k-confetti" x="175" y="0" width="6" height="10" fill="#a855f7" style="animation-delay:.9s"/>
+    <rect class="k-confetti" x="35"  y="0" width="5" height="8"  fill="#4ade80" style="animation-delay:1.2s"/>
+    <rect class="k-confetti" x="165" y="0" width="5" height="8"  fill="#f97316" style="animation-delay:1.5s"/>
+  </g>
+  {% endif %}
+
+  <g class="k-cat{% if escena == 'ensenar' %} k-cat-shift{% endif %}">
+  <g class="{% if escena == 'celebrar' %}k-jump{% endif %}">
+    <ellipse cx="100" cy="190" rx="48" ry="6" fill="rgba(45,27,78,.12)"/>
+
+    <!-- Cola -->
+    <path class="k-tail" d="M138 172 C172 168 182 132 164 112" />
+
+    <!-- Cuerpo -->
+    <ellipse cx="100" cy="152" rx="42" ry="36" class="k-fur"/>
+    <ellipse cx="100" cy="160" rx="26" ry="24" class="k-belly"/>
+    <ellipse cx="80"  cy="185" rx="13" ry="7" class="k-fur k-paw"/>
+    <ellipse cx="120" cy="185" rx="13" ry="7" class="k-fur k-paw"/>
+
+    <!-- Cabeza -->
+    <g class="k-head">
+      <polygon points="60,74 64,34 94,58" class="k-fur"/>
+      <polygon points="140,74 136,34 106,58" class="k-fur"/>
+      <polygon points="67,64 68,45 85,58" class="k-ear-in"/>
+      <polygon points="133,64 132,45 115,58" class="k-ear-in"/>
+      <ellipse cx="100" cy="84" rx="44" ry="37" class="k-fur"/>
+      <path d="M100 49 v10 M89 51 l2 8 M111 51 l-2 8" class="k-stripe"/>
+
+      <g class="k-eyes">
+        <ellipse cx="83"  cy="84" rx="5.5" ry="7.5" class="k-eye"/>
+        <ellipse cx="117" cy="84" rx="5.5" ry="7.5" class="k-eye"/>
+        <circle cx="85"  cy="81" r="2" fill="#fff"/>
+        <circle cx="119" cy="81" r="2" fill="#fff"/>
+      </g>
+
+      {% if escena == 'leer' or escena == 'lupa' %}
+      <g class="k-glasses">
+        <circle cx="83" cy="84" r="11"/>
+        <circle cx="117" cy="84" r="11"/>
+        <path d="M94 84 h12"/>
+      </g>
+      {% endif %}
+
+      <ellipse cx="72"  cy="97" rx="7" ry="4" class="k-blush"/>
+      <ellipse cx="128" cy="97" rx="7" ry="4" class="k-blush"/>
+      <path d="M96 94 h8 l-4 5 z" class="k-nose"/>
+      <path d="M100 99 q-5 6 -10 2 M100 99 q5 6 10 2" class="k-line"/>
+      <path d="M68 95 l-22 -4 M68 100 l-22 3 M132 95 l22 -4 M132 100 l22 3" class="k-whisker"/>
+
+      {% if escena == 'ensenar' %}
+      <!-- Birrete -->
+      <polygon points="100,30 140,44 100,56 60,44" fill="#3b0764"/>
+      <rect x="84" y="46" width="32" height="10" fill="#3b0764"/>
+      <g class="k-tassel"><path d="M136 44 v16" stroke="#facc15" stroke-width="2"/><circle cx="136" cy="62" r="3" fill="#facc15"/></g>
+      {% endif %}
+    </g>
+
+    {# ===== Patitas y objetos de cada escena ===== #}
+    {% if escena == 'leer' %}
+      <path d="M100 146 L58 139 L58 176 L100 183 L142 176 L142 139 Z" fill="#9333ea"/>
+      <path d="M100 144 L63 137 L63 172 L100 178 Z" class="k-paper"/>
+      <path d="M100 144 L137 137 L137 172 L100 178 Z" class="k-paper"/>
+      <path d="M70 147 l22 3 M70 154 l22 3 M70 161 l16 2 M108 150 l22 -3 M108 157 l22 -3" class="k-text"/>
+      <path d="M100 144 L137 137 L137 172 L100 178 Z" class="k-paper k-page"/>
+      <ellipse cx="62"  cy="160" rx="9" ry="8" class="k-fur k-paw"/>
+      <ellipse cx="138" cy="160" rx="9" ry="8" class="k-fur k-paw"/>
+
+    {% elif escena == 'escribir' %}
+      <rect x="60" y="150" width="80" height="32" rx="3" class="k-paper"/>
+      <path d="M60 158 h80 M60 166 h80 M60 174 h80" stroke="#e9d5ff" stroke-width="1"/>
+      <path d="M68 166 q5 -7 10 0 t10 0 t10 0 t10 0 t10 0" class="k-scribble"/>
+      <ellipse cx="64" cy="168" rx="9" ry="8" class="k-fur k-paw"/>
+      <g class="k-pencil">
+        <g transform="rotate(-35 118 150)">
+          <rect x="112" y="122" width="10" height="34" fill="#facc15"/>
+          <rect x="112" y="118" width="10" height="6" fill="#f472b6"/>
+          <polygon points="112,156 122,156 117,166" fill="#fde68a"/>
+          <polygon points="115,161 119,161 117,166" fill="#2d1b4e"/>
+        </g>
+        <ellipse cx="128" cy="146" rx="9" ry="8" class="k-fur k-paw"/>
+      </g>
+      <text x="160" y="70" class="k-float k-math">Σ</text>
+      <text x="30" y="80" class="k-float k-math" style="animation-delay:1.5s">x̄</text>
+
+    {% elif escena == 'graficas' %}
+      <rect x="54" y="132" width="92" height="52" rx="6" fill="#fff" stroke="#e9d5ff" stroke-width="2"/>
+      <rect class="k-bar" x="62"  y="160" width="14" height="20" fill="#a855f7" style="animation-delay:0s"/>
+      <rect class="k-bar" x="81"  y="148" width="14" height="32" fill="#ec4899" style="animation-delay:.2s"/>
+      <rect class="k-bar" x="100" y="154" width="14" height="26" fill="#22d3ee" style="animation-delay:.4s"/>
+      <rect class="k-bar" x="119" y="140" width="14" height="40" fill="#4ade80" style="animation-delay:.6s"/>
+      <path d="M69 156 L88 144 L107 150 L126 136" class="k-trend"/>
+      <ellipse cx="54"  cy="150" rx="9" ry="8" class="k-fur k-paw"/>
+      <g class="k-point"><ellipse cx="152" cy="130" rx="9" ry="8" class="k-fur k-paw"/></g>
+      <text x="160" y="60" class="k-float k-math">%</text>
+
+    {% elif escena == 'lupa' %}
+      <circle cx="66"  cy="168" r="4" fill="#a855f7"/>
+      <circle cx="84"  cy="160" r="4" fill="#ec4899"/>
+      <circle cx="98"  cy="172" r="4" fill="#22d3ee"/>
+      <circle cx="114" cy="158" r="4" fill="#4ade80"/>
+      <circle cx="132" cy="170" r="4" fill="#f97316"/>
+      <ellipse cx="66" cy="148" rx="9" ry="8" class="k-fur k-paw"/>
+      <g class="k-lupa">
+        <path d="M112 176 L128 192" stroke="#7c3aed" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="102" cy="166" r="15" fill="rgba(186,230,253,.55)" stroke="#7c3aed" stroke-width="4"/>
+        <path d="M94 160 q4 -5 10 -4" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="128" cy="190" rx="9" ry="8" class="k-fur k-paw"/>
+      </g>
+
+    {% elif escena == 'dados' %}
+      <ellipse cx="62"  cy="150" rx="9" ry="8" class="k-fur k-paw"/>
+      <ellipse cx="138" cy="150" rx="9" ry="8" class="k-fur k-paw"/>
+      <g transform="translate(22 112)"><g class="k-dice">
+        <rect width="24" height="24" rx="5" class="k-die"/>
+        <circle cx="7" cy="7" r="2.4" class="k-pip"/><circle cx="12" cy="12" r="2.4" class="k-pip"/><circle cx="17" cy="17" r="2.4" class="k-pip"/>
+      </g></g>
+      <g transform="translate(154 106)"><g class="k-dice" style="animation-delay:.5s">
+        <rect width="24" height="24" rx="5" class="k-die"/>
+        <circle cx="7" cy="7" r="2.4" class="k-pip"/><circle cx="17" cy="7" r="2.4" class="k-pip"/>
+        <circle cx="7" cy="17" r="2.4" class="k-pip"/><circle cx="17" cy="17" r="2.4" class="k-pip"/>
+      </g></g>
+      <text x="100" y="24" text-anchor="middle" class="k-float k-math">½</text>
+
+    {% elif escena == 'ensenar' %}
+      <ellipse cx="84" cy="160" rx="9" ry="8" class="k-fur k-paw"/>
+      <g class="k-pointer">
+        <path d="M60 138 L8 50" stroke="#a16207" stroke-width="4" stroke-linecap="round"/>
+        <ellipse cx="60" cy="140" rx="9" ry="8" class="k-fur k-paw"/>
+      </g>
+
+    {% elif escena == 'pensar' %}
+      <ellipse cx="84" cy="160" rx="9" ry="8" class="k-fur k-paw"/>
+      <path d="M128 150 Q134 128 112 118" class="k-arm"/>
+      <ellipse cx="108" cy="117" rx="9" ry="8" class="k-fur k-paw"/>
+
+    {% elif escena == 'saludar' %}
+      <ellipse cx="84" cy="160" rx="9" ry="8" class="k-fur k-paw"/>
+      <g class="k-wave">
+        <path d="M128 146 L156 80" class="k-arm"/>
+        <ellipse cx="158" cy="74" rx="11" ry="12" class="k-fur k-paw"/>
+        <ellipse cx="158" cy="76" rx="5" ry="4" class="k-ear-in"/>
+      </g>
+      <path class="k-float k-heart" d="M178 46 c-4 -6 -12 -2 -8 4 l8 8 l8 -8 c4 -6 -4 -10 -8 -4z"/>
+      <path class="k-float k-heart" style="animation-delay:1.4s" d="M40 70 c-3 -5 -10 -2 -7 3 l7 7 l7 -7 c3 -5 -4 -8 -7 -3z"/>
+
+    {% elif escena == 'celebrar' %}
+      <path d="M70 146 L48 108" class="k-arm"/>
+      <path d="M130 146 L152 108" class="k-arm"/>
+      <ellipse cx="46"  cy="104" rx="10" ry="10" class="k-fur k-paw"/>
+      <ellipse cx="154" cy="104" rx="10" ry="10" class="k-fur k-paw"/>
+      <path class="k-star" d="M30 40 l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1z"/>
+      <path class="k-star" style="animation-delay:.7s" d="M170 36 l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1z"/>
+    {% endif %}
+  </g>
+  </g>
+</svg>
+</div>
+{% endmacro %}

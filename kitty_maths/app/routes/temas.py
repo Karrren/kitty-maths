@@ -62,6 +62,19 @@ def subtema(subtema_id):
 
     cur.execute("SELECT COUNT(*) as total FROM ejercicios WHERE subtema_id = %s", (subtema_id,))
     total_ej = cur.fetchone()
+
+    cur.execute("SELECT * FROM videos WHERE subtema_id = %s ORDER BY fecha, id", (subtema_id,))
+    videos = cur.fetchall()
+
+    retro = None
+    if session.get('usuario_rol') == 'estudiante':
+        cur.execute("""
+            SELECT r.nota, r.comentario, r.fecha, d.nombre as docente
+            FROM retroalimentacion r LEFT JOIN usuarios d ON d.id = r.docente_id
+            WHERE r.estudiante_id = %s AND r.subtema_id = %s
+        """, (session['usuario_id'], subtema_id))
+        retro = cur.fetchone()
     cur.close()
 
-    return render_template('temas/subtema.html', subtema=subtema, total_ejercicios=total_ej['total'])
+    return render_template('temas/subtema.html', subtema=subtema, total_ejercicios=total_ej['total'],
+                           videos=videos, retro=retro)

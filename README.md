@@ -65,6 +65,14 @@ MYSQL_HOST=TU_USUARIO.mysql.pythonanywhere-services.com MYSQL_USER=TU_USUARIO MY
 
 Listo: la página queda en `https://TU_USUARIO.pythonanywhere.com`.
 
+### Si ya habías creado la base con una versión anterior
+
+Las tablas de videos y retroalimentación son nuevas. Créalas una sola vez con:
+
+```bash
+mysql -u TU_USUARIO -h TU_USUARIO.mysql.pythonanywhere-services.com -p 'TU_USUARIO$kitty_maths' < kitty_maths/actualizar_bd.sql
+```
+
 ### Actualizar la página después de hacer cambios
 
 Sube los cambios a GitHub y luego, en una consola Bash de PythonAnywhere:

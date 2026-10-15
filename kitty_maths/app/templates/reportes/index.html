@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}Mis Reportes - KittyMaths{% endblock %}
 {% block content %}
 <main class="content">
+    {{ kitty('graficas') }}
     <h1>📊 Mis Reportes</h1>
 
     <!-- Resumen global -->
@@ -33,6 +35,30 @@
         </p>
         {% endif %}
     </div>
+
+    <!-- Retroalimentación del docente -->
+    <h2 class="section-title">📝 Calificaciones y retroalimentación del docente</h2>
+    {% if retros %}
+        {% for r in retros %}
+        <div class="retro-card">
+            <div style="display:flex;justify-content:space-between;gap:1rem;align-items:flex-start">
+                <div>
+                    <p style="font-weight:700">
+                        <a href="{{ url_for('temas.subtema', subtema_id=r.subtema_id) }}" style="color:inherit">{{ r.subtema }}</a>
+                    </p>
+                    <p style="font-size:.8rem;color:var(--gris)">{{ r.tema }}</p>
+                </div>
+                {% if r.nota is not none %}<div class="nota">{{ r.nota }}</div>{% endif %}
+            </div>
+            {% if r.comentario %}<p style="margin-top:.6rem;white-space:pre-line">{{ r.comentario }}</p>{% endif %}
+            <p class="retro-meta">{{ r.docente or 'Docente' }} · {{ r.fecha.strftime('%d/%m/%Y') }}</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color:var(--gris);font-size:.9rem;margin-bottom:1.5rem">
+            🐱 Tu docente aún no te ha dejado calificaciones ni comentarios.
+        </p>
+    {% endif %}
 
     <!-- Rendimiento por tema -->
     {% if por_tema %}

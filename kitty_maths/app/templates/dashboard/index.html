@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}Mi Panel - KittyMaths{% endblock %}
 {% block content %}
 <main class="content">
+    {{ kitty('escribir') }}
     <h1>Hola, {{ session.usuario_nombre }} 🐱</h1>
 
     <!-- Estadísticas -->

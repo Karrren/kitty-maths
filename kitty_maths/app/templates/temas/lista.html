@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}Temas - KittyMaths{% endblock %}
 {% block content %}
 <main class="content">
+    {{ kitty('leer') }}
     <h1>📚 Temas</h1>
     <p style="color:var(--gris);margin-bottom:1.5rem">Selecciona un tema para ver sus subtemas y ejercicios.</p>
 

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}KittyMaths - Refuerzo de Estadística Grado 11{% endblock %}
 {% block content %}
 <main class="content">
+    {{ kitty('saludar') }}
     <h1>Bienvenido a KittyMaths 🐱</h1>
 
     <section class="cards-grid" id="searchResults" aria-live="polite">

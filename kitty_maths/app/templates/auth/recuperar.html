@@ -1,0 +1,29 @@
+{% from '_kitty.html' import kitty %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar contraseña - KittyMaths</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<main class="inicio-container">
+    <span class="logo-inicio-text">Kitty<span>Maths</span> 🐱</span>
+
+    {{ kitty('pensar', clase='kitty-auth') }}
+    <section class="registro">
+        <h1>¿Olvidaste tu contraseña?</h1>
+        <p style="margin-bottom:1rem;line-height:1.5">
+            Pídele a tu docente que la restablezca. Desde su panel puede asignarte
+            una contraseña nueva; luego ingresa con ella.
+        </p>
+        <div class="credentials-box">
+            <p><strong>Estudiantes:</strong> tu docente la cambia desde <em>Panel docente → Ver detalle</em>.</p>
+            <p style="margin-top:.4rem"><strong>Docentes:</strong> otro docente la cambia desde <em>Panel docente → Docentes</em>.</p>
+        </div>
+        <p class="link-alt"><a href="{{ url_for('auth.login') }}">← Volver a iniciar sesión</a></p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}Panel Docente - KittyMaths{% endblock %}
 {% block content %}
 <main class="content">
+    {{ kitty('ensenar') }}
     <h1>🏫 Panel Docente</h1>
     <p style="color:var(--gris);margin-bottom:1.5rem">
         Bienvenido/a, <strong>{{ session.usuario_nombre }}</strong>. Aquí puedes ver el progreso de todos tus estudiantes.
     </p>
+    <div style="margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:.5rem">
+        <a href="{{ url_for('docente.docentes') }}" class="btn-outline">👩‍🏫 Docentes</a>
+        <a href="{{ url_for('temas.lista') }}" class="btn-outline">🎬 Videos y actividades por tema</a>
+    </div>
 
     <!-- Estadísticas generales -->
     <div class="stats-row" style="margin-bottom:2rem">

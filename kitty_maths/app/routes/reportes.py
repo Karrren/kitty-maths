@@ -47,6 +47,18 @@ def index():
         ORDER BY t.orden
     """, (usuario_id,))
     por_tema = cur.fetchall()
+
+    cur.execute("""
+        SELECT r.nota, r.comentario, r.fecha, s.id as subtema_id, s.nombre as subtema,
+               t.nombre as tema, d.nombre as docente
+        FROM retroalimentacion r
+        JOIN subtemas s ON s.id = r.subtema_id
+        JOIN temas t ON t.id = s.tema_id
+        LEFT JOIN usuarios d ON d.id = r.docente_id
+        WHERE r.estudiante_id = %s
+        ORDER BY r.fecha DESC
+    """, (usuario_id,))
+    retros = cur.fetchall()
     cur.close()
 
     total = resumen['total'] or 0
@@ -58,4 +70,5 @@ def index():
                            total=total,
                            correctos=correctos,
                            porcentaje_global=porcentaje_global,
-                           por_tema=por_tema)
+                           por_tema=por_tema,
+                           retros=retros)

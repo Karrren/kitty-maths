@@ -422,4 +422,100 @@ body {
     .stats-row { grid-template-columns:1fr 1fr; }
     .resumen-grid { grid-template-columns:1fr; gap:.5rem; }
 }
+
+/* ===== FORMULARIOS DEL DOCENTE / RETROALIMENTACIÓN ===== */
+.form-input { width:100%; padding:.55rem .85rem; border:2px solid #ede9fe; border-radius:10px; font-size:.92rem; font-family:inherit; outline:none; background:white; }
+.form-input:focus { border-color:var(--verde-medio); }
+.form-inline { display:flex; flex-wrap:wrap; gap:.6rem; align-items:flex-end; }
+.form-inline > div { flex:1 1 200px; }
+.form-inline label { display:block; font-size:.85rem; font-weight:600; margin-bottom:.3rem; }
+.section-title { font-size:1.05rem; font-weight:700; color:var(--verde); margin:2rem 0 1rem; }
+.retro-card { background:white; border-radius:var(--radio); box-shadow:var(--sombra); border-left:4px solid var(--verde-medio); padding:1rem 1.2rem; margin-bottom:.9rem; }
+.retro-card .nota { font-size:1.4rem; font-weight:800; color:var(--verde); }
+.retro-meta { font-size:.8rem; color:var(--gris); margin-top:.4rem; }
+.btn-danger-sm { background:none; border:1px solid #dc2626; color:#dc2626; border-radius:20px; padding:.25rem .8rem; font-size:.8rem; font-weight:600; cursor:pointer; }
+.btn-danger-sm:hover { background:#dc2626; color:white; }
+@media (max-width: 768px) { .form-inline > div { flex-basis:100% !important; } }
  
+/* ===== GATICO ANIMADO ===== */
+.kitty-hero { float:right; width:140px; margin:-.5rem 0 .5rem 1rem; }
+.kitty-auth { width:150px; margin:0 auto -.5rem; position:relative; z-index:1; }
+.kitty-modal { width:120px; margin:0 auto .5rem; }
+.kitty-quiz { width:80px; flex:0 0 80px; }
+.kitty-side { width:150px; margin:-.3rem auto .4rem; }
+.kitty { display:block; width:100%; height:auto; overflow:visible; }
+.kitty * { transform-box: view-box; }
+
+.kitty .k-fur     { fill:#f5a25d; }
+.kitty .k-belly   { fill:#fde7cf; }
+.kitty .k-paw     { stroke:#e07b2e; stroke-width:1.6; }
+.kitty .k-ear-in  { fill:#f9a8d4; }
+.kitty .k-eye     { fill:#2d1b4e; }
+.kitty .k-nose    { fill:#ec4899; }
+.kitty .k-blush   { fill:#f9a8d4; opacity:.65; }
+.kitty .k-stripe  { stroke:#e07b2e; stroke-width:3.5; stroke-linecap:round; fill:none; }
+.kitty .k-line    { stroke:#2d1b4e; stroke-width:2; fill:none; stroke-linecap:round; }
+.kitty .k-whisker { stroke:#2d1b4e; stroke-width:1.4; opacity:.45; stroke-linecap:round; fill:none; }
+.kitty .k-tail    { stroke:#f5a25d; stroke-width:12; fill:none; stroke-linecap:round; }
+.kitty .k-arm     { stroke:#f5a25d; stroke-width:14; fill:none; stroke-linecap:round; }
+.kitty .k-paper   { fill:#fff; stroke:#c4b5fd; stroke-width:1.5; }
+.kitty .k-text    { stroke:#c4b5fd; stroke-width:2; stroke-linecap:round; }
+.kitty .k-glasses { fill:rgba(255,255,255,.25); stroke:#4c1d95; stroke-width:2.2; }
+.kitty .k-math    { font:700 20px 'Segoe UI', sans-serif; fill:#9333ea; }
+.kitty .k-heart   { fill:#ec4899; }
+.kitty .k-star    { fill:#facc15; }
+.kitty .k-bubble  { fill:#fff; stroke:#c4b5fd; stroke-width:2; }
+.kitty .k-qmark   { font:800 20px 'Segoe UI', sans-serif; fill:#9333ea; }
+.kitty .k-die     { fill:#fff; stroke:#7c3aed; stroke-width:2.5; }
+.kitty .k-pip     { fill:#7c3aed; }
+.kitty .k-chalk   { font:600 11px 'Segoe UI', sans-serif; fill:#fff; }
+.kitty .k-chalk-line { stroke:#fff; stroke-width:2; fill:none; stroke-dasharray:60; animation:k-draw 3s ease-in-out infinite; }
+.kitty .k-scribble   { stroke:#7c3aed; stroke-width:2; fill:none; stroke-linecap:round; stroke-dasharray:60; animation:k-draw 2s linear infinite; }
+.kitty .k-trend      { stroke:#2d1b4e; stroke-width:2; fill:none; stroke-dasharray:70; animation:k-draw 3s ease-out infinite; }
+
+/* Movimientos comunes */
+.kitty .k-eyes { transform-origin:100px 84px; animation:k-blink 4s infinite; }
+.kitty .k-tail { transform-origin:138px 172px; animation:k-tail 2.4s ease-in-out infinite alternate; }
+.kitty .k-head { transform-origin:100px 120px; animation:k-bob 3s ease-in-out infinite alternate; }
+.kitty .k-float { animation:k-float 3s ease-in-out infinite; opacity:0; }
+
+/* Escenas */
+.kitty-leer .k-page   { transform-origin:100px 160px; animation:k-flip 4s ease-in-out infinite; }
+.kitty-leer .k-eyes, .kitty-lupa .k-eyes { animation:k-blink 4s infinite, k-read 2s ease-in-out infinite alternate; }
+.kitty .k-pencil      { animation:k-write 2s ease-in-out infinite; }
+.kitty .k-bar         { transform-box:fill-box; transform-origin:center bottom; animation:k-grow 3s ease-out infinite; }
+.kitty .k-point       { transform-origin:140px 145px; animation:k-tap 1.2s ease-in-out infinite alternate; }
+.kitty .k-lupa        { animation:k-search 3.2s ease-in-out infinite alternate; }
+.kitty .k-dice        { transform-box:fill-box; transform-origin:center; animation:k-roll 1.6s ease-in-out infinite; }
+.kitty .k-cat-shift   { transform-origin:100px 190px; transform:translate(28px,8px) scale(.88); }
+.kitty .k-pointer     { transform-origin:60px 140px; animation:k-pointer 1.8s ease-in-out infinite alternate; }
+.kitty .k-tassel      { transform-origin:136px 44px; animation:k-tail 1.5s ease-in-out infinite alternate; }
+.kitty .k-think       { transform-origin:150px 40px; animation:k-pulse 2s ease-in-out infinite; }
+.kitty-pensar .k-eyes { animation:k-blink 4s infinite, k-lookup 3s ease-in-out infinite alternate; }
+.kitty .k-wave        { transform-origin:128px 146px; animation:k-wave 1s ease-in-out infinite alternate; }
+.kitty .k-jump        { animation:k-jump 1s ease-in-out infinite; }
+.kitty .k-confetti    { transform-box:fill-box; transform-origin:center; animation:k-confetti 2.4s linear infinite; }
+.kitty .k-star        { transform-box:fill-box; transform-origin:center; animation:k-twinkle 1.4s ease-in-out infinite alternate; }
+
+@keyframes k-blink   { 0%,92%,100% { transform:scaleY(1); } 95% { transform:scaleY(.1); } }
+@keyframes k-tail    { from { transform:rotate(-8deg); } to { transform:rotate(10deg); } }
+@keyframes k-bob     { from { transform:rotate(-2deg); } to { transform:rotate(2deg) translateY(-1px); } }
+@keyframes k-read    { from { translate:-2px 1px; } to { translate:2px 2px; } }
+@keyframes k-lookup  { from { translate:0 0; } to { translate:3px -3px; } }
+@keyframes k-float   { 0% { opacity:0; transform:translateY(10px); } 30% { opacity:1; } 100% { opacity:0; transform:translateY(-20px); } }
+@keyframes k-flip    { 0%,55% { transform:scaleX(1); opacity:1; } 75% { transform:scaleX(-1); opacity:1; } 80%,100% { transform:scaleX(-1); opacity:0; } }
+@keyframes k-draw    { from { stroke-dashoffset:70; } to { stroke-dashoffset:0; } }
+@keyframes k-write   { 0%,100% { transform:translate(-22px,0); } 50% { transform:translate(0,-3px); } }
+@keyframes k-grow    { 0% { transform:scaleY(.15); } 40%,100% { transform:scaleY(1); } }
+@keyframes k-tap     { from { transform:rotate(0); } to { transform:rotate(-12deg); } }
+@keyframes k-search  { 0% { transform:translate(-22px,-4px); } 50% { transform:translate(0,-10px); } 100% { transform:translate(16px,-2px); } }
+@keyframes k-roll    { 0%,100% { transform:translateY(0) rotate(0); } 50% { transform:translateY(-24px) rotate(180deg); } }
+@keyframes k-pointer { from { transform:rotate(-4deg); } to { transform:rotate(8deg); } }
+@keyframes k-pulse   { 0%,100% { transform:scale(1); } 50% { transform:scale(1.08); } }
+@keyframes k-wave    { from { transform:rotate(-12deg); } to { transform:rotate(18deg); } }
+@keyframes k-jump    { 0%,100% { transform:translateY(0); } 40% { transform:translateY(-14px); } 60% { transform:translateY(-14px); } }
+@keyframes k-confetti{ from { transform:translateY(-10px) rotate(0); opacity:1; } to { transform:translateY(190px) rotate(540deg); opacity:.2; } }
+@keyframes k-twinkle { from { transform:scale(.6); opacity:.5; } to { transform:scale(1.15); opacity:1; } }
+
+@media (max-width: 768px) { .kitty-hero { width:96px; margin-top:0; } }
+@media (prefers-reduced-motion: reduce) { .kitty * { animation:none !important; } .kitty .k-float { opacity:1; } }

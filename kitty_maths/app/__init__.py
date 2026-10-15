@@ -31,6 +31,7 @@ def create_app():
     from app.routes.ejercicios import ejercicios_bp
     from app.routes.reportes import reportes_bp
     from app.routes.docente import docente_bp
+    from app.routes.videos import videos_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
@@ -38,5 +39,6 @@ def create_app():
     app.register_blueprint(ejercicios_bp)
     app.register_blueprint(reportes_bp)
     app.register_blueprint(docente_bp)
+    app.register_blueprint(videos_bp)
 
     return app

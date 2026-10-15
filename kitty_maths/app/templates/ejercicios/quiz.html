@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}Quiz: {{ subtema.nombre }} - KittyMaths{% endblock %}
 {% block content %}
 <main class="content">
@@ -14,11 +15,14 @@
     <!-- Encabezado -->
     <div class="quiz-header">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
-            <div>
-                <h1 style="font-size:1.25rem;margin:0">✏️ {{ subtema.nombre }}</h1>
-                <p style="color:var(--gris);font-size:.88rem;margin:.2rem 0 0">
-                    {{ ejercicios|length }} pregunta(s) · Responde todo para enviar
-                </p>
+            <div style="display:flex;align-items:center;gap:.8rem">
+                {{ kitty(tema=subtema.tema_id, clase='kitty-quiz') }}
+                <div>
+                    <h1 style="font-size:1.25rem;margin:0">✏️ {{ subtema.nombre }}</h1>
+                    <p style="color:var(--gris);font-size:.88rem;margin:.2rem 0 0">
+                        {{ ejercicios|length }} pregunta(s) · Responde todo para enviar
+                    </p>
+                </div>
             </div>
             <span id="contadorLabel" style="background:var(--fondo);color:var(--morado);font-weight:700;padding:.3rem .9rem;border-radius:20px;font-size:.88rem">
                 0 / {{ ejercicios|length }}
@@ -62,6 +66,9 @@
     </p>
 
 </main>
+
+<template id="kittyBien">{{ kitty('celebrar', clase='kitty-modal') }}</template>
+<template id="kittyAnimo">{{ kitty('pensar', clase='kitty-modal') }}</template>
 
 <!-- Modal resultados -->
 <div class="modal-overlay" id="modalOverlay">
@@ -131,7 +138,7 @@ function mostrarResultados(data) {
     head.style.background = color;
     document.getElementById('modalTitulo').textContent = emoji + ' Resultados del Quiz';
 
-    let html = `
+    let html = document.getElementById(data.porcentaje >= 60 ? 'kittyBien' : 'kittyAnimo').innerHTML + `
         <div style="text-align:center;margin-bottom:1.2rem">
             <div class="resultado-score" style="color:${color}">${data.porcentaje}%</div>
             <p style="font-weight:700;font-size:1.05rem">${msg}</p>

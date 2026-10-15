@@ -19,7 +19,8 @@ def registro():
         email = request.form['email'].strip().lower()
         password = request.form['password']
         confirmar = request.form['confirmar']
-        rol = request.form.get('rol', 'estudiante')
+        # El registro público solo crea estudiantes; los docentes los crea otro docente
+        rol = 'estudiante'
 
         if password != confirmar:
             flash('Las contraseñas no coinciden.', 'danger')
@@ -68,6 +69,10 @@ def login():
             return redirect(url_for('dashboard.index'))
         flash('Correo o contraseña incorrectos.', 'danger')
     return render_template('auth/login.html')
+
+@auth_bp.route('/recuperar')
+def recuperar():
+    return render_template('auth/recuperar.html')
 
 @auth_bp.route('/logout')
 def logout():

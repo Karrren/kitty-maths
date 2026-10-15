@@ -1,3 +1,4 @@
+{% from '_kitty.html' import kitty %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,6 +26,7 @@
     {% endif %}
     {% endwith %}
 
+    {{ kitty('saludar', clase='kitty-auth') }}
     <section class="registro">
         <h1>Iniciar sesión</h1>
 
@@ -39,6 +41,8 @@
 
             <button type="submit">Continuar</button>
         </form>
+
+        <p class="link-alt"><a href="{{ url_for('auth.recuperar') }}">¿Olvidaste tu contraseña?</a></p>
 
         <!-- Credenciales de prueba -->
         <div class="credentials-box">

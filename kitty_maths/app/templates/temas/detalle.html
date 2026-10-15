@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}{{ tema.nombre }} - KittyMaths{% endblock %}
 {% block content %}
 <main class="content">
@@ -9,6 +10,7 @@
         <span>{{ tema.nombre }}</span>
     </nav>
 
+    {{ kitty(tema=tema.id) }}
     <h1>{{ tema.nombre }}</h1>
     <p style="color:var(--gris);margin-bottom:1.5rem">{{ tema.descripcion }}</p>
 

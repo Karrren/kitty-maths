@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_kitty.html' import kitty %}
 {% block title %}{{ subtema.nombre }} - Ejercicios{% endblock %}
 {% block content %}
 <main class="content">
@@ -11,6 +12,7 @@
         <span>{{ subtema.nombre }}</span>
     </nav>
 
+    {{ kitty(tema=subtema.tema_id) }}
     <h1>{{ subtema.nombre }}</h1>
 
     {% if session.usuario_rol == 'docente' %}
