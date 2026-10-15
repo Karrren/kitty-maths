@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Temas - KittyMaths{% endblock %}
+{% block content %}
+<main class="content">
+    <h1>📚 Temas</h1>
+    <p style="color:var(--gris);margin-bottom:1.5rem">Selecciona un tema para ver sus subtemas y ejercicios.</p>
+
+    <section class="cards-grid" id="searchResults" aria-live="polite">
+        {% for tema in temas %}
+        <a class="topic-card" href="{{ url_for('temas.detalle', tema_id=tema.id) }}">
+            <h2>{{ tema.nombre }}</h2>
+            <p>{{ tema.descripcion }}</p>
+        </a>
+        {% endfor %}
+    </section>
+
+    {% if not temas %}
+    <p class="empty-results">Aún no hay temas disponibles.</p>
+    {% endif %}
+</main>
+{% endblock %}

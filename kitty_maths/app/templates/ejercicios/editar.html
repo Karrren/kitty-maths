@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Editar ejercicio - {{ ejercicio.subtema_nombre }}{% endblock %}
+{% block content %}
+<main class="content">
+
+    <nav class="breadcrumb">
+        <a href="{{ url_for('temas.lista') }}">Temas</a>
+        <span>›</span>
+        <a href="{{ url_for('temas.detalle', tema_id=ejercicio.tema_id) }}">{{ ejercicio.tema_nombre }}</a>
+        <span>›</span>
+        <a href="{{ url_for('ejercicios.lista', subtema_id=ejercicio.subtema_id) }}">{{ ejercicio.subtema_nombre }}</a>
+        <span>›</span>
+        <span>Editar ejercicio</span>
+    </nav>
+
+    <h1>✏️ Editar ejercicio</h1>
+    <p style="color:var(--gris);margin-bottom:1.5rem">Subtema <strong>{{ ejercicio.subtema_nombre }}</strong></p>
+
+    {% if error %}
+    <div class="flash danger" style="margin-bottom:1rem">
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    <div class="content-box">
+        <div class="content-box-body">
+            <form method="POST">
+                <label for="pregunta">Pregunta</label>
+                <textarea id="pregunta" name="pregunta" rows="3" required
+                    style="width:100%;padding:.65rem .9rem;border:2px solid #ede9fe;border-radius:10px;
+                           font-size:.95rem;margin-bottom:1.1rem;outline:none;font-family:inherit"
+                    >{{ request.form.pregunta or ejercicio.pregunta }}</textarea>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div>
+                        <label for="opcion_a">Opción A</label>
+                        <input type="text" id="opcion_a" name="opcion_a" required
+                               value="{{ request.form.opcion_a or ejercicio.opcion_a }}"
+                               style="width:100%;padding:.6rem .9rem;border:2px solid #ede9fe;border-radius:10px;margin-bottom:1.1rem">
+                    </div>
+                    <div>
+                        <label for="opcion_b">Opción B</label>
+                        <input type="text" id="opcion_b" name="opcion_b" required
+                               value="{{ request.form.opcion_b or ejercicio.opcion_b }}"
+                               style="width:100%;padding:.6rem .9rem;border:2px solid #ede9fe;border-radius:10px;margin-bottom:1.1rem">
+                    </div>
+                    <div>
+                        <label for="opcion_c">Opción C (opcional)</label>
+                        <input type="text" id="opcion_c" name="opcion_c"
+                               value="{{ request.form.opcion_c or ejercicio.opcion_c or '' }}"
+                               style="width:100%;padding:.6rem .9rem;border:2px solid #ede9fe;border-radius:10px;margin-bottom:1.1rem">
+                    </div>
+                    <div>
+                        <label for="opcion_d">Opción D (opcional)</label>
+                        <input type="text" id="opcion_d" name="opcion_d"
+                               value="{{ request.form.opcion_d or ejercicio.opcion_d or '' }}"
+                               style="width:100%;padding:.6rem .9rem;border:2px solid #ede9fe;border-radius:10px;margin-bottom:1.1rem">
+                    </div>
+                </div>
+
+                {% set correcta = request.form.respuesta_correcta or ejercicio.respuesta_correcta %}
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div>
+                        <label for="respuesta_correcta">Respuesta correcta</label>
+                        <select id="respuesta_correcta" name="respuesta_correcta" required
+                                style="width:100%;padding:.6rem .9rem;border:2px solid #ede9fe;border-radius:10px;margin-bottom:1.1rem">
+                            <option value="A" {% if correcta == 'A' %}selected{% endif %}>A</option>
+                            <option value="B" {% if correcta == 'B' %}selected{% endif %}>B</option>
+                            <option value="C" {% if correcta == 'C' %}selected{% endif %}>C</option>
+                            <option value="D" {% if correcta == 'D' %}selected{% endif %}>D</option>
+                        </select>
+                    </div>
+                    <div>
+                        {% set dif = request.form.dificultad or ejercicio.dificultad %}
+                        <label for="dificultad">Dificultad</label>
+                        <select id="dificultad" name="dificultad"
+                                style="width:100%;padding:.6rem .9rem;border:2px solid #ede9fe;border-radius:10px;margin-bottom:1.1rem">
+                            <option value="facil" {% if dif == 'facil' %}selected{% endif %}>Fácil</option>
+                            <option value="media" {% if dif == 'media' %}selected{% endif %}>Media</option>
+                            <option value="dificil" {% if dif == 'dificil' %}selected{% endif %}>Difícil</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label for="explicacion">Explicación (se muestra al estudiante después de responder)</label>
+                <textarea id="explicacion" name="explicacion" rows="2"
+                    style="width:100%;padding:.65rem .9rem;border:2px solid #ede9fe;border-radius:10px;
+                           font-size:.95rem;margin-bottom:1.3rem;outline:none;font-family:inherit"
+                    >{{ request.form.explicacion or ejercicio.explicacion or '' }}</textarea>
+
+                <button type="submit" class="btn-primary">Guardar cambios</button>
+                <a href="{{ url_for('ejercicios.lista', subtema_id=ejercicio.subtema_id) }}"
+                   class="btn-outline" style="margin-left:.5rem">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

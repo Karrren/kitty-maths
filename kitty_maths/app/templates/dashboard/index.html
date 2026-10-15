@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Mi Panel - KittyMaths{% endblock %}
+{% block content %}
+<main class="content">
+    <h1>Hola, {{ session.usuario_nombre }} 🐱</h1>
+
+    <!-- Estadísticas -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_intentos }}</div>
+            <div class="stat-label">Intentos totales</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#22c55e">
+            <div class="stat-value" style="color:#16a34a">{{ total_correctos }}</div>
+            <div class="stat-label">Respuestas correctas</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#ec4899">
+            <div class="stat-value" style="color:#ec4899">{{ porcentaje_global }}%</div>
+            <div class="stat-label">Promedio global</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#f97316">
+            <div class="stat-value" style="color:#f97316">{{ subtemas_completados }}</div>
+            <div class="stat-label">Subtemas completados</div>
+        </div>
+    </div>
+
+    <!-- Temas -->
+    <h2 style="font-size:1.1rem;font-weight:700;color:var(--morado);margin-bottom:1rem">Seguir viendo</h2>
+
+    <section class="cards-grid" id="searchResults" aria-live="polite">
+        {% for tema in temas %}
+        {% set prog = progresos.get(tema.id, {}) %}
+        {% set total_sub = prog.get('total_subtemas', 0) %}
+        {% set completados = prog.get('completados', 0) %}
+        {% set pct = ((completados / total_sub) * 100)|int if total_sub > 0 else 0 %}
+        <a class="topic-card" href="{{ url_for('temas.detalle', tema_id=tema.id) }}">
+            <h2>{{ tema.nombre }}</h2>
+            <p>{{ tema.descripcion[:80] }}...</p>
+            <div style="margin-top:.75rem">
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-fill" style="width:{{ pct }}%"></div>
+                </div>
+                <small style="color:var(--gris);font-size:.75rem">{{ completados }}/{{ total_sub }} subtemas · {{ pct }}%</small>
+            </div>
+        </a>
+        {% endfor %}
+    </section>
+
+    <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
+        <a href="{{ url_for('temas.lista') }}" class="btn-primary">▶ Continuar estudiando</a>
+        <a href="{{ url_for('reportes.index') }}" class="btn-outline">📊 Ver mis reportes</a>
+    </div>
+</main>
+{% endblock %}

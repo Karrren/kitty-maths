@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Panel Docente - KittyMaths{% endblock %}
+{% block content %}
+<main class="content">
+    <h1>🏫 Panel Docente</h1>
+    <p style="color:var(--gris);margin-bottom:1.5rem">
+        Bienvenido/a, <strong>{{ session.usuario_nombre }}</strong>. Aquí puedes ver el progreso de todos tus estudiantes.
+    </p>
+
+    <!-- Estadísticas generales -->
+    <div class="stats-row" style="margin-bottom:2rem">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_estudiantes }}</div>
+            <div class="stat-label">Estudiantes registrados</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#22c55e">
+            <div class="stat-value" style="color:#16a34a">{{ total_completados }}</div>
+            <div class="stat-label">Subtemas completados (total)</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#4ade80">
+            <div class="stat-value" style="color:#15803d">{{ total_intentos }}</div>
+            <div class="stat-label">Ejercicios respondidos</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#86efac">
+            <div class="stat-value" style="color:#166534">{{ total_subtemas }}</div>
+            <div class="stat-label">Subtemas disponibles</div>
+        </div>
+    </div>
+
+    <!-- Rendimiento por tema -->
+    {% if por_tema %}
+    <h2 style="font-size:1.05rem;font-weight:700;color:var(--verde);margin-bottom:1rem">
+        📊 Actividad por tema (todos los estudiantes)
+    </h2>
+    <section class="cards-grid" style="margin-bottom:2rem">
+        {% for pt in por_tema %}
+        {% set pct = ((pt.aciertos or 0) / pt.intentos * 100)|round(1) if pt.intentos > 0 else 0 %}
+        <article class="topic-card" style="cursor:default">
+            <h2 style="font-size:.9rem">{{ pt.tema }}</h2>
+            <div class="progress-bar-wrap" style="margin:.5rem 0">
+                <div class="progress-bar-fill" style="width:{{ pct }}%;background:{% if pct >= 80 %}#16a34a{% elif pct >= 60 %}#f97316{% else %}#dc2626{% endif %}"></div>
+            </div>
+            <p style="font-size:.8rem">
+                <strong style="color:{% if pct >= 80 %}#16a34a{% elif pct >= 60 %}#f97316{% else %}#dc2626{% endif %}">{{ pct }}%</strong>
+                · {{ pt.aciertos or 0 }}/{{ pt.intentos }} correctas
+            </p>
+        </article>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Lista de estudiantes -->
+    <h2 style="font-size:1.05rem;font-weight:700;color:var(--verde);margin-bottom:1rem">
+        👥 Estudiantes
+    </h2>
+
+    {% if estudiantes %}
+    <div style="overflow-x:auto">
+        <table class="tabla-reporte">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th style="text-align:center">Intentos</th>
+                    <th style="text-align:center">Correctas</th>
+                    <th style="text-align:center">Promedio</th>
+                    <th style="text-align:center">Subtemas completados</th>
+                    <th style="text-align:center">Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for est in estudiantes %}
+                <tr>
+                    <td><strong>{{ est.nombre }}</strong></td>
+                    <td style="color:var(--gris);font-size:.85rem">{{ est.email }}</td>
+                    <td style="text-align:center">{{ est.total_intentos }}</td>
+                    <td style="text-align:center;color:#16a34a;font-weight:600">{{ est.total_correctos }}</td>
+                    <td style="text-align:center">
+                        <strong style="color:{% if est.porcentaje >= 80 %}#16a34a{% elif est.porcentaje >= 60 %}#f97316{% else %}#dc2626{% endif %}">
+                            {{ est.porcentaje }}%
+                        </strong>
+                        <div class="progress-bar-wrap" style="margin-top:.3rem;height:5px">
+                            <div class="progress-bar-fill"
+                                 style="width:{{ est.porcentaje }}%;background:{% if est.porcentaje >= 80 %}#16a34a{% elif est.porcentaje >= 60 %}#f97316{% else %}#dc2626{% endif %}">
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align:center">
+                        <span class="badge-ok">{{ est.subtemas_completados }}/{{ total_subtemas }}</span>
+                    </td>
+                    <td style="text-align:center">
+                        <a href="{{ url_for('docente.detalle_estudiante', estudiante_id=est.id) }}"
+                           class="btn-primary" style="font-size:.78rem;padding:.3rem .9rem">
+                            Ver detalle
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:3rem;background:white;border-radius:var(--radio);box-shadow:var(--sombra)">
+        <p style="font-size:2rem;margin-bottom:.5rem">🐱</p>
+        <p style="color:var(--gris)">Aún no hay estudiantes registrados.</p>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Mis Reportes - KittyMaths{% endblock %}
+{% block content %}
+<main class="content">
+    <h1>📊 Mis Reportes</h1>
+
+    <!-- Resumen global -->
+    <div class="reporte-resumen">
+        <div class="resumen-grid">
+            <div>
+                <div class="resumen-num">{{ total }}</div>
+                <div class="resumen-label">Intentos totales</div>
+            </div>
+            <div>
+                <div class="resumen-num" style="color:#16a34a">{{ correctos }}</div>
+                <div class="resumen-label">Respuestas correctas</div>
+            </div>
+            <div>
+                <div class="resumen-num" style="color:{% if porcentaje_global >= 80 %}#16a34a{% elif porcentaje_global >= 60 %}#f97316{% else %}#dc2626{% endif %}">
+                    {{ porcentaje_global }}%
+                </div>
+                <div class="resumen-label">Promedio global</div>
+            </div>
+        </div>
+        {% if total > 0 %}
+        <div class="progress-bar-wrap" style="margin-top:1rem;height:12px">
+            <div class="progress-bar-fill" style="width:{{ porcentaje_global }}%;background:{% if porcentaje_global >= 80 %}#16a34a{% elif porcentaje_global >= 60 %}#f97316{% else %}#dc2626{% endif %}"></div>
+        </div>
+        {% else %}
+        <p style="color:var(--gris);margin-top:1rem;font-size:.9rem">
+            🐱 ¡Aún no has respondido ejercicios!
+            <a href="{{ url_for('temas.lista') }}" style="color:var(--morado);font-weight:600">Ir a los temas →</a>
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- Rendimiento por tema -->
+    {% if por_tema %}
+    <h2 style="font-size:1.05rem;font-weight:700;color:var(--morado);margin-bottom:1rem">Rendimiento por tema</h2>
+    <section class="cards-grid" style="margin-bottom:2rem">
+        {% for pt in por_tema %}
+        {% set pct = ((pt.aciertos or 0) / pt.intentos * 100)|round(1) if pt.intentos > 0 else 0 %}
+        <article class="topic-card" style="cursor:default">
+            <h2 style="font-size:.9rem">{{ pt.tema }}</h2>
+            <div class="progress-bar-wrap" style="margin:.5rem 0">
+                <div class="progress-bar-fill" style="width:{{ pct }}%;background:{% if pct >= 80 %}#16a34a{% elif pct >= 60 %}#f97316{% else %}#dc2626{% endif %}"></div>
+            </div>
+            <p style="font-size:.8rem">
+                <strong style="color:{% if pct >= 80 %}#16a34a{% elif pct >= 60 %}#f97316{% else %}#dc2626{% endif %}">{{ pct }}%</strong>
+                · {{ pt.aciertos or 0 }}/{{ pt.intentos }} correctas
+            </p>
+        </article>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Tabla detallada -->
+    <h2 style="font-size:1.05rem;font-weight:700;color:var(--morado);margin-bottom:1rem">Detalle por subtema</h2>
+    <div style="overflow-x:auto">
+        <table class="tabla-reporte">
+            <thead>
+                <tr>
+                    <th>Tema</th>
+                    <th>Subtema</th>
+                    <th>Estado</th>
+                    <th>Intentos</th>
+                    <th>Aciertos</th>
+                    <th>%</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in progreso %}
+                <tr>
+                    <td style="font-size:.8rem;color:var(--gris)">{{ p.tema }}</td>
+                    <td>{{ p.subtema }}</td>
+                    <td>
+                        {% if p.completado %}
+                            <span class="badge-ok">✓ Completado</span>
+                        {% elif p.total_intentos %}
+                            <span class="badge-prog">En progreso</span>
+                        {% else %}
+                            <span class="badge-none">Sin iniciar</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center">{{ p.total_intentos or 0 }}</td>
+                    <td style="text-align:center;color:#16a34a;font-weight:600">{{ p.total_aciertos or 0 }}</td>
+                    <td style="text-align:center;font-weight:700;color:{% if p.porcentaje and p.porcentaje >= 80 %}#16a34a{% elif p.porcentaje and p.porcentaje >= 60 %}#f97316{% else %}#dc2626{% endif %}">
+                        {% if p.porcentaje %}{{ p.porcentaje }}%{% else %}—{% endif %}
+                    </td>
+                    <td style="text-align:center">
+                        <a href="{{ url_for('ejercicios.quiz', subtema_id=p.subtema_id) }}"
+                           class="btn-primary" style="font-size:.78rem;padding:.3rem .8rem">
+                            {% if p.completado %}🔄{% else %}▶{% endif %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:1.5rem">
+        <a href="{{ url_for('temas.lista') }}" class="btn-primary">📚 Seguir estudiando</a>
+    </div>
+</main>
+{% endblock %}

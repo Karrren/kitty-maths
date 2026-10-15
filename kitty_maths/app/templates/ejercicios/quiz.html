@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block title %}Quiz: {{ subtema.nombre }} - KittyMaths{% endblock %}
+{% block content %}
+<main class="content">
+
+    <nav class="breadcrumb">
+        <a href="{{ url_for('temas.lista') }}">Temas</a>
+        <span>›</span>
+        <a href="{{ url_for('temas.detalle', tema_id=subtema.tema_id) }}">{{ subtema.tema_nombre }}</a>
+        <span>›</span>
+        <span>Quiz</span>
+    </nav>
+
+    <!-- Encabezado -->
+    <div class="quiz-header">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+            <div>
+                <h1 style="font-size:1.25rem;margin:0">✏️ {{ subtema.nombre }}</h1>
+                <p style="color:var(--gris);font-size:.88rem;margin:.2rem 0 0">
+                    {{ ejercicios|length }} pregunta(s) · Responde todo para enviar
+                </p>
+            </div>
+            <span id="contadorLabel" style="background:var(--fondo);color:var(--morado);font-weight:700;padding:.3rem .9rem;border-radius:20px;font-size:.88rem">
+                0 / {{ ejercicios|length }}
+            </span>
+        </div>
+        <div class="progress-bar-wrap" style="margin-top:.75rem">
+            <div class="progress-bar-fill" id="progresoBarra" style="width:0%"></div>
+        </div>
+    </div>
+
+    <!-- Ejercicios -->
+    {% for ej in ejercicios %}
+    <div class="ejercicio-card" id="card-{{ ej.id }}">
+        <div class="ejercicio-num">{{ loop.index }}</div>
+        <div class="ejercicio-body">
+            <p class="ejercicio-pregunta">{{ ej.pregunta }}</p>
+            <div class="opciones">
+                {% for letra, texto in [('A', ej.opcion_a), ('B', ej.opcion_b), ('C', ej.opcion_c), ('D', ej.opcion_d)] %}
+                {% if texto %}
+                <label class="opcion-label" for="ej{{ ej.id }}_{{ letra }}">
+                    <input class="opcion-radio" type="radio"
+                           id="ej{{ ej.id }}_{{ letra }}"
+                           name="ej_{{ ej.id }}"
+                           value="{{ letra }}"
+                           data-ejercicio="{{ ej.id }}">
+                    <span class="opcion-letra">{{ letra }}</span>
+                    <span class="opcion-texto">{{ texto }}</span>
+                </label>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <button class="btn-enviar" id="btnEnviar" disabled>
+        Enviar respuestas
+    </button>
+    <p style="text-align:center;color:var(--gris);font-size:.82rem;margin-top:.5rem">
+        Responde todas las preguntas para poder enviar.
+    </p>
+
+</main>
+
+<!-- Modal resultados -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+        <div class="modal-head" id="modalHead">
+            <h3 id="modalTitulo">📊 Tus resultados</h3>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+            <a href="{{ url_for('temas.detalle', tema_id=subtema.tema_id) }}"
+               class="btn-modal btn-modal-outline">← Volver al tema</a>
+            <button class="btn-modal btn-modal-outline" onclick="location.reload()">🔄 Reintentar</button>
+            <a href="{{ url_for('reportes.index') }}"
+               class="btn-modal btn-modal-primary">📊 Ver reporte</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const SUBTEMA_ID = {{ subtema.id }};
+const TOTAL = {{ ejercicios|length }};
+let respondidas = 0;
+const respuestas = {};
+
+document.querySelectorAll('.opcion-radio').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const ejId = this.dataset.ejercicio;
+        if (!(ejId in respuestas)) {
+            respondidas++;
+            document.getElementById('contadorLabel').textContent = respondidas + ' / ' + TOTAL;
+            document.getElementById('progresoBarra').style.width = (respondidas / TOTAL * 100) + '%';
+        }
+        respuestas[ejId] = this.value;
+        document.querySelectorAll(`[name="ej_${ejId}"]`).forEach(r => {
+            r.closest('.opcion-label').classList.remove('opcion-seleccionada');
+        });
+        this.closest('.opcion-label').classList.add('opcion-seleccionada');
+        document.getElementById('btnEnviar').disabled = respondidas < TOTAL;
+    });
+});
+
+document.getElementById('btnEnviar').addEventListener('click', async () => {
+    const btn = document.getElementById('btnEnviar');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const res = await fetch(`/subtemas/${SUBTEMA_ID}/quiz/enviar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ respuestas })
+    });
+    const data = await res.json();
+    mostrarResultados(data);
+});
+
+function mostrarResultados(data) {
+    const emoji  = data.porcentaje >= 80 ? '🎉' : data.porcentaje >= 60 ? '😊' : '😅';
+    const color  = data.porcentaje >= 80 ? '#16a34a' : data.porcentaje >= 60 ? '#f97316' : '#dc2626';
+    const msg    = data.porcentaje >= 80 ? '¡Excelente trabajo!'
+                 : data.porcentaje >= 60 ? '¡Buen trabajo! Sigue practicando.'
+                 : '¡Sigue intentándolo, tú puedes!';
+
+    const head = document.getElementById('modalHead');
+    head.style.background = color;
+    document.getElementById('modalTitulo').textContent = emoji + ' Resultados del Quiz';
+
+    let html = `
+        <div style="text-align:center;margin-bottom:1.2rem">
+            <div class="resultado-score" style="color:${color}">${data.porcentaje}%</div>
+            <p style="font-weight:700;font-size:1.05rem">${msg}</p>
+            <p style="color:var(--gris);font-size:.9rem">
+                <strong>${data.aciertos}</strong> correctas de <strong>${data.total}</strong>
+                ${data.completado ? '<br><span style="color:#16a34a;font-weight:700">✅ Subtema completado</span>' : ''}
+            </p>
+        </div>
+        <h4 style="font-size:.95rem;font-weight:700;margin-bottom:.75rem">Retroalimentación:</h4>
+    `;
+
+    const opts = { A: 'opcion_a', B: 'opcion_b', C: 'opcion_c', D: 'opcion_d' };
+    data.resultados.forEach((r, i) => {
+        const respTexto = r['opcion_' + r.respuesta_usuario.toLowerCase()] || '(sin respuesta)';
+        const corrTexto = r['opcion_' + r.respuesta_correcta.toLowerCase()];
+        html += `
+        <div class="feedback-card ${r.correcto ? 'feedback-ok' : 'feedback-mal'}">
+            <p style="font-weight:700;margin-bottom:.3rem">${r.correcto ? '✅' : '❌'} Pregunta ${i+1}</p>
+            <p style="margin-bottom:.4rem">${r.pregunta}</p>
+            ${!r.correcto ? `<p style="color:#dc2626;font-size:.88rem">Tu respuesta: <strong>${r.respuesta_usuario}: ${respTexto}</strong></p>` : ''}
+            <p style="color:#16a34a;font-size:.88rem">Correcta: <strong>${r.respuesta_correcta}: ${corrTexto}</strong></p>
+            <div class="explicacion-box">${r.explicacion}</div>
+        </div>`;
+    });
+
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalOverlay').classList.add('open');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.remove('open');
+});
+</script>
+{% endblock %}

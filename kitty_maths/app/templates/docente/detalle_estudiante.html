@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}{{ estudiante.nombre }} - Panel Docente{% endblock %}
+{% block content %}
+<main class="content">
+
+    <nav class="breadcrumb">
+        <a href="{{ url_for('docente.panel') }}">Panel Docente</a>
+        <span>›</span>
+        <span>{{ estudiante.nombre }}</span>
+    </nav>
+
+    <h1>👤 {{ estudiante.nombre }}</h1>
+    <p style="color:var(--gris);margin-bottom:1.5rem;font-size:.9rem">
+        {{ estudiante.email }} · Registrado el {{ estudiante.fecha_registro.strftime('%d/%m/%Y') if estudiante.fecha_registro else '' }}
+    </p>
+
+    <!-- Resumen del estudiante -->
+    <div class="reporte-resumen" style="margin-bottom:1.5rem">
+        <div class="resumen-grid">
+            <div>
+                <div class="resumen-num">{{ total }}</div>
+                <div class="resumen-label">Intentos totales</div>
+            </div>
+            <div>
+                <div class="resumen-num" style="color:#16a34a">{{ correctos }}</div>
+                <div class="resumen-label">Respuestas correctas</div>
+            </div>
+            <div>
+                <div class="resumen-num"
+                     style="color:{% if porcentaje_global >= 80 %}#16a34a{% elif porcentaje_global >= 60 %}#f97316{% else %}#dc2626{% endif %}">
+                    {{ porcentaje_global }}%
+                </div>
+                <div class="resumen-label">Promedio global</div>
+            </div>
+        </div>
+        {% if total > 0 %}
+        <div class="progress-bar-wrap" style="margin-top:1rem;height:12px">
+            <div class="progress-bar-fill"
+                 style="width:{{ porcentaje_global }}%;background:{% if porcentaje_global >= 80 %}#16a34a{% elif porcentaje_global >= 60 %}#f97316{% else %}#dc2626{% endif %}">
+            </div>
+        </div>
+        {% else %}
+        <p style="color:var(--gris);margin-top:.75rem;font-size:.9rem">
+            🐱 Este estudiante aún no ha respondido ningún ejercicio.
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- Detalle por subtema -->
+    <h2 style="font-size:1.05rem;font-weight:700;color:var(--verde);margin-bottom:1rem">
+        📋 Progreso por subtema
+    </h2>
+    <div style="overflow-x:auto">
+        <table class="tabla-reporte">
+            <thead>
+                <tr>
+                    <th>Tema</th>
+                    <th>Subtema</th>
+                    <th style="text-align:center">Estado</th>
+                    <th style="text-align:center">Intentos</th>
+                    <th style="text-align:center">Aciertos</th>
+                    <th style="text-align:center">Promedio</th>
+                    <th style="text-align:center">Completado el</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in progreso %}
+                <tr>
+                    <td style="font-size:.8rem;color:var(--gris)">{{ p.tema }}</td>
+                    <td>{{ p.subtema }}</td>
+                    <td style="text-align:center">
+                        {% if p.completado %}
+                            <span class="badge-ok">✓ Completado</span>
+                        {% elif p.total_intentos %}
+                            <span class="badge-prog">En progreso</span>
+                        {% else %}
+                            <span class="badge-none">Sin iniciar</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center">{{ p.total_intentos or 0 }}</td>
+                    <td style="text-align:center;color:#16a34a;font-weight:600">{{ p.total_aciertos or 0 }}</td>
+                    <td style="text-align:center;font-weight:700;
+                        color:{% if p.porcentaje and p.porcentaje >= 80 %}#16a34a
+                               {% elif p.porcentaje and p.porcentaje >= 60 %}#f97316
+                               {% elif p.porcentaje %}#dc2626
+                               {% else %}var(--gris){% endif %}">
+                        {% if p.porcentaje %}{{ p.porcentaje }}%{% else %}—{% endif %}
+                    </td>
+                    <td style="text-align:center;font-size:.82rem;color:var(--gris)">
+                        {% if p.fecha_completado %}
+                            {{ p.fecha_completado.strftime('%d/%m/%Y') }}
+                        {% else %}—{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:1.5rem">
+        <a href="{{ url_for('docente.panel') }}" class="btn-outline">← Volver al panel</a>
+    </div>
+
+</main>
+{% endblock %}

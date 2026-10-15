@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KittyMaths{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="page-container">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="logo-section">
+            <img class="logo-img" src="{{ url_for('static', filename='img/logoreal2.png') }}"
+                 alt="KittyMaths" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <span class="logo-text" style="display:none">kittymaths</span>
+        </div>
+
+        <form class="search-container" id="searchForm" role="search" onsubmit="return false;">
+            <input class="search-box" type="search" id="searchInput"
+                   placeholder="Buscar" autocomplete="off">
+            <button class="search-button" type="submit">Ir</button>
+        </form>
+
+        <div class="profile-section" id="profileSection">
+            {% if session.usuario_id %}
+            <span class="user-text">{{ session.usuario_nombre }}</span>
+            {% endif %}
+            <button class="avatar-button" id="profileButton" type="button" aria-label="Perfil">
+                🐱
+            </button>
+            <div class="profile-menu" id="profileMenu">
+                <div class="profile-preview">
+                    <span style="font-size:2rem">🐱</span>
+                    <div>
+                        <strong>{{ session.usuario_nombre or 'Invitado' }}</strong>
+                        <span>{{ (session.usuario_rol or '')|capitalize }}</span>
+                    </div>
+                </div>
+                {% if session.usuario_id %}
+                <div class="account-info">
+                    <p><strong>Usuario:</strong> {{ session.usuario_nombre }}</p>
+                    <p><strong>Rol:</strong> {{ session.usuario_rol|capitalize }}</p>
+                </div>
+                {% if session.usuario_rol == 'docente' %}
+                <a href="{{ url_for('docente.panel') }}">🏫 Panel docente</a>
+                {% else %}
+                <a href="{{ url_for('reportes.index') }}">📊 Mis reportes</a>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}" class="danger">🚪 Cerrar sesión</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+                <a href="{{ url_for('auth.registro') }}">Registrarse</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" aria-label="Menú principal">
+        <div class="nav-menu">
+            <button class="nav-button" type="button">Inicio</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('auth.index') }}">Página principal</a>
+                {% if session.usuario_id %}
+                <a href="{{ url_for('dashboard.index') }}">Mi panel</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="nav-menu">
+            <button class="nav-button" type="button">Temas</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('temas.lista') }}">Ver todos los temas</a>
+                <a href="{{ url_for('temas.detalle', tema_id=1) }}">Variables estadísticas</a>
+                <a href="{{ url_for('temas.detalle', tema_id=2) }}">Distribución de frecuencias</a>
+                <a href="{{ url_for('temas.detalle', tema_id=3) }}">Medidas de tendencia central</a>
+                <a href="{{ url_for('temas.detalle', tema_id=4) }}">Medidas de dispersión</a>
+                <a href="{{ url_for('temas.detalle', tema_id=5) }}">Probabilidad</a>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <button class="nav-button" type="button">Ejercicios</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('temas.lista') }}">Seleccionar tema</a>
+            </div>
+        </div>
+        {% if session.usuario_id %}
+        <div class="navbar-right">
+            <a href="{{ url_for('auth.logout') }}" class="btn-logout">Cerrar sesión</a>
+        </div>
+        {% else %}
+        <div class="navbar-right">
+            <a href="{{ url_for('auth.login') }}" class="btn-outline"
+               style="font-size:.85rem;padding:.35rem 1rem">Ingresar</a>
+        </div>
+        {% endif %}
+    </nav>
+
+    <!-- FLASH -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            <span>{{ message }}</span>
+            <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="site-footer">
+        <strong>🐱 kittymaths</strong> — "Con Kitty a tu lado, el refuerzo está asegurado" |
+        IET San Luis · Garagoa, Boyacá · 2026
+    </footer>
+</div>
+
+<script>
+document.getElementById('profileButton').addEventListener('click', function () {
+    const m = document.getElementById('profileMenu');
+    m.classList.toggle('open');
+});
+document.addEventListener('click', function (e) {
+    if (!document.getElementById('profileSection').contains(e.target))
+        document.getElementById('profileMenu').classList.remove('open');
+});
+setTimeout(() => document.querySelectorAll('.flash').forEach(el => el.remove()), 4000);
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

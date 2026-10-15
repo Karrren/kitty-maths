@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "kitty_maths",
+      "runtimeExecutable": "C:/Users/Karen Gaitan/Documents/proyecto.mauren/venv/Scripts/python.exe",
+      "runtimeArgs": ["kitty_maths/run.py"],
+      "port": 5000
+    }
+  ]
+}

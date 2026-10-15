@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar - KittyMaths</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<main class="inicio-container">
+
+    <img class="logo-inicio"
+         src="{{ url_for('static', filename='img/logo.png') }}"
+         alt="KittyMaths"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="logo-inicio-text" style="display:none">kittymaths</span>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}" style="max-width:400px;width:100%;margin-bottom:.75rem">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <section class="registro">
+        <h1>Iniciar sesión</h1>
+
+        <form action="{{ url_for('auth.login') }}" method="post">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email"
+                   placeholder="correo@ejemplo.com" required autocomplete="email">
+
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password"
+                   placeholder="********" required>
+
+            <button type="submit">Continuar</button>
+        </form>
+
+        <!-- Credenciales de prueba -->
+        <div class="credentials-box">
+            <p style="font-weight:700;margin-bottom:.5rem;color:var(--verde)">👤 Usuarios de prueba:</p>
+            <p><strong>Estudiante:</strong> estudiante@kittymaths.com</p>
+            <p><strong>Docente:</strong> docente@kittymaths.com</p>
+            <p style="margin-top:.4rem"><strong>Contraseña:</strong> kitty123</p>
+        </div>
+
+        <p class="link-alt">¿No tienes cuenta? <a href="{{ url_for('auth.registro') }}">Regístrate aquí</a></p>
+    </section>
+</main>
+</body>
+</html>

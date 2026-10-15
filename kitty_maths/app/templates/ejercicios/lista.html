@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}{{ subtema.nombre }} - Ejercicios{% endblock %}
+{% block content %}
+<main class="content">
+
+    <nav class="breadcrumb">
+        <a href="{{ url_for('temas.lista') }}">Temas</a>
+        <span>›</span>
+        <a href="{{ url_for('temas.detalle', tema_id=subtema.tema_id) }}">{{ subtema.tema_nombre }}</a>
+        <span>›</span>
+        <span>{{ subtema.nombre }}</span>
+    </nav>
+
+    <h1>{{ subtema.nombre }}</h1>
+
+    {% if session.usuario_rol == 'docente' %}
+        <p style="color:var(--gris);margin-bottom:1.5rem">
+            {{ ejercicios|length }} ejercicio(s) en este subtema. Aquí puedes agregar, editar o eliminar preguntas.
+        </p>
+        <div style="margin-bottom:1.5rem">
+            <a href="{{ url_for('ejercicios.crear', subtema_id=subtema.id) }}" class="btn-primary">
+                ➕ Agregar ejercicio
+            </a>
+            <a href="{{ url_for('temas.subtema', subtema_id=subtema.id) }}" class="btn-outline" style="margin-left:.75rem">
+                📚 Ver Teoría
+            </a>
+        </div>
+    {% else %}
+        <p style="color:var(--gris);margin-bottom:1.5rem">
+            {{ ejercicios|length }} ejercicio(s) disponibles. Haz clic en <strong>Hacer Quiz</strong> para practicarlos todos juntos.
+        </p>
+        <div style="margin-bottom:1.5rem">
+            <a href="{{ url_for('ejercicios.quiz', subtema_id=subtema.id) }}" class="btn-primary">
+                ✏️ Hacer Quiz
+            </a>
+            <a href="{{ url_for('temas.subtema', subtema_id=subtema.id) }}" class="btn-outline" style="margin-left:.75rem">
+                📚 Ver Teoría
+            </a>
+        </div>
+    {% endif %}
+
+    {% if not ejercicios %}
+    <p class="empty-results">
+        {% if session.usuario_rol == 'docente' %}
+            Aún no hay ejercicios en este subtema. Usa "Agregar ejercicio" para crear el primero.
+        {% else %}
+            Todavía no hay ejercicios disponibles para este subtema.
+        {% endif %}
+    </p>
+    {% endif %}
+
+    <section class="cards-grid">
+        {% for ej in ejercicios %}
+        <article class="topic-card" style="cursor:default">
+            <h2 style="font-size:.88rem;margin-bottom:.5rem">
+                Pregunta {{ loop.index }}
+                <span style="font-size:.75rem;font-weight:500;color:var(--gris)">({{ ej.dificultad }})</span>
+            </h2>
+            <p style="font-size:.88rem">{{ ej.pregunta }}</p>
+
+            {% if session.usuario_rol == 'docente' %}
+            <div style="margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap">
+                <a href="{{ url_for('ejercicios.editar', ejercicio_id=ej.id) }}"
+                   class="btn-outline" style="font-size:.75rem;padding:.3rem .8rem">
+                    ✏️ Editar
+                </a>
+                <form method="POST" action="{{ url_for('ejercicios.eliminar', ejercicio_id=ej.id) }}"
+                      onsubmit="return confirm('¿Eliminar este ejercicio? Esta acción no se puede deshacer.');"
+                      style="display:inline">
+                    <button type="submit" class="btn-outline"
+                            style="font-size:.75rem;padding:.3rem .8rem;border-color:#dc2626;color:#dc2626">
+                        🗑️ Eliminar
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </section>
+
+</main>
+{% endblock %}

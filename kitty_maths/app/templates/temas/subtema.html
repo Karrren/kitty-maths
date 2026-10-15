@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}{{ subtema.nombre }} - KittyMaths{% endblock %}
+{% block content %}
+<main class="content">
+
+    <nav class="breadcrumb">
+        <a href="{{ url_for('temas.lista') }}">Temas</a>
+        <span>›</span>
+        <a href="{{ url_for('temas.detalle', tema_id=subtema.tema_id) }}">{{ subtema.tema_nombre }}</a>
+        <span>›</span>
+        <span>{{ subtema.nombre }}</span>
+    </nav>
+
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:1.5rem;align-items:start">
+
+        <!-- Contenido teórico -->
+        <div class="content-box">
+            <div class="content-box-header" style="background:{{ subtema.tema_color }}">
+                <h3>📖 {{ subtema.nombre }}</h3>
+            </div>
+            <div class="content-box-body">
+                <div class="teoria-content">
+                    {{ subtema.contenido | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel lateral -->
+        <div class="side-tip">
+            <p style="font-weight:700;margin-bottom:.75rem">💡 En este subtema</p>
+            <ul style="list-style:none;font-size:.88rem;color:var(--gris);margin-bottom:1rem">
+                <li style="margin-bottom:.4rem">✅ Explicación con ejemplos</li>
+                <li style="margin-bottom:.4rem">✅ Fórmulas clave</li>
+                <li style="margin-bottom:.4rem">✅ {{ total_ejercicios }} ejercicios de práctica</li>
+                <li style="margin-bottom:.4rem">✅ Retroalimentación inmediata</li>
+            </ul>
+            <div class="tip-alert">
+                🐱 <strong>Consejo Kitty:</strong> Lee la teoría antes de hacer los ejercicios. ¡Puedes volver cuantas veces quieras!
+            </div>
+            <a href="{{ url_for('ejercicios.quiz', subtema_id=subtema.id) }}"
+               class="btn-primary" style="margin-top:1rem;width:100%;justify-content:center">
+                ✏️ Practicar ahora
+            </a>
+            <a href="{{ url_for('temas.detalle', tema_id=subtema.tema_id) }}"
+               class="btn-outline" style="margin-top:.6rem;width:100%;justify-content:center">
+                ← Volver al tema
+            </a>
+        </div>
+    </div>
+
+</main>
+
+{% block scripts %}
+<script>
+// responsive: en móvil quitar grid
+if (window.innerWidth < 768) {
+    document.querySelector('.content > div[style*="grid"]').style.display = 'block';
+}
+</script>
+{% endblock %}
+{% endblock %}

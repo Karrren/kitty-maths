@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}KittyMaths - Refuerzo de Estadística Grado 11{% endblock %}
+{% block content %}
+<main class="content">
+    <h1>Bienvenido a KittyMaths 🐱</h1>
+
+    <section class="cards-grid" id="searchResults" aria-live="polite">
+        <a class="topic-card" href="{{ url_for('temas.detalle', tema_id=1) }}">
+            <h2>Variables Estadísticas</h2>
+            <p>Aprende los tipos de variables: cualitativas, cuantitativas, discretas y continuas.</p>
+        </a>
+        <a class="topic-card" href="{{ url_for('temas.detalle', tema_id=2) }}">
+            <h2>Distribución de Frecuencias</h2>
+            <p>Construye tablas de frecuencia y calcula frecuencias absolutas, relativas y acumuladas.</p>
+        </a>
+        <a class="topic-card" href="{{ url_for('temas.detalle', tema_id=3) }}">
+            <h2>Medidas de Tendencia Central</h2>
+            <p>Calcula la media, mediana y moda de un conjunto de datos estadísticos.</p>
+        </a>
+        <a class="topic-card" href="{{ url_for('temas.detalle', tema_id=4) }}">
+            <h2>Medidas de Dispersión</h2>
+            <p>Comprende el rango, varianza y desviación estándar de los datos.</p>
+        </a>
+        <a class="topic-card" href="{{ url_for('temas.detalle', tema_id=5) }}">
+            <h2>Probabilidad</h2>
+            <p>Estudia experimentos aleatorios, espacio muestral y la regla de Laplace.</p>
+        </a>
+    </section>
+
+    <p class="empty-results" id="emptyResults" hidden>No se encontraron resultados.</p>
+
+    <section class="videos-section" aria-labelledby="videosTitle">
+        <h2 id="videosTitle">Videos explicativos</h2>
+        <div class="videos-grid">
+            <article class="video-card">
+                <div class="video-frame">
+                    <iframe src="https://www.youtube.com/embed/WeeEE8o1aqM"
+                        title="Probabilidad simple"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <h3>Probabilidad simple</h3>
+            </article>
+            <article class="video-card">
+                <div class="video-frame">
+                    <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U"
+                        title="Espacio muestral"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <h3>Espacio muestral</h3>
+            </article>
+            <article class="video-card">
+                <div class="video-frame">
+                    <iframe src="https://www.youtube.com/embed/fsgzhAtw8r8"
+                        title="Técnicas de conteo"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <h3>Técnicas de conteo</h3>
+            </article>
+        </div>
+    </section>
+</main>
+
+{% block scripts %}
+<script>
+// Buscador de tarjetas
+document.getElementById('searchForm').addEventListener('submit', buscar);
+document.getElementById('searchInput').addEventListener('input', buscar);
+
+function buscar() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.topic-card');
+    let found = 0;
+    cards.forEach(c => {
+        const match = !q ||
+            c.querySelector('h2').textContent.toLowerCase().includes(q) ||
+            c.querySelector('p').textContent.toLowerCase().includes(q);
+        c.style.display = match ? '' : 'none';
+        if (match) found++;
+    });
+    document.getElementById('emptyResults').hidden = found > 0;
+}
+</script>
+{% endblock %}
+{% endblock %}
