@@ -1,0 +1,26 @@
+# Configuración para publicar KittyMaths en Render (plan gratis).
+# Render lee este archivo con "New > Blueprint" y te pide los datos de TiDB Cloud.
+services:
+  - type: web
+    name: kitty-maths
+    runtime: python
+    plan: free
+    buildCommand: pip install -r kitty_maths/requirements.txt && python kitty_maths/inicializar_bd.py
+    startCommand: gunicorn --chdir kitty_maths run:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: MYSQL_HOST
+        sync: false
+      - key: MYSQL_PORT
+        value: "4000"
+      - key: MYSQL_USER
+        sync: false
+      - key: MYSQL_PASSWORD
+        sync: false
+      - key: MYSQL_DB
+        value: kitty_maths
+      - key: MYSQL_SSL
+        value: "true"
+      - key: SECRET_KEY
+        generateValue: true

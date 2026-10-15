@@ -6,106 +6,79 @@ Hecha con Flask (Python) y MySQL.
 
 ---
 
-## Publicarla gratis en PythonAnywhere
+## Publicarla gratis (Render + TiDB Cloud)
 
-[PythonAnywhere](https://www.pythonanywhere.com) tiene un plan gratuito que incluye Python y MySQL, y no pide tarjeta.
-La página queda en un enlace como `https://TU_USUARIO.pythonanywhere.com`.
+- **[Render](https://render.com)** pone la página en internet. Es gratis y no pide tarjeta.
+- **[TiDB Cloud](https://tidbcloud.com)** guarda la base de datos. Es compatible con MySQL, gratis y no pide tarjeta.
 
-> En el plan gratuito tienes que entrar a la web una vez cada 3 meses y pulsar
-> **"Run until 3 months from today"** (pestaña *Web*); si no, la página se apaga.
+La página queda en un enlace como `https://kitty-maths.onrender.com`.
 
-### 1. Crear la cuenta
+> En el plan gratis de Render la página "se duerme" si nadie entra durante 15 minutos.
+> La primera visita después tarda cerca de un minuto en cargar; las siguientes van rápido.
 
-Regístrate en <https://www.pythonanywhere.com/pricing/> con el plan **Beginner (gratis)**.
-En todo lo que sigue, cambia `TU_USUARIO` por el nombre de usuario que elijas.
+### 1. Crear la base de datos en TiDB Cloud
 
-### 2. Crear la base de datos
+1. Regístrate en <https://tidbcloud.com> (puedes entrar con tu cuenta de Google o GitHub).
+2. Crea un clúster del plan **Starter** (gratis). Si te deja elegir región, escoge una de Estados Unidos,
+   por ejemplo **Oregon (us-west-2)**, que queda cerca de Render.
+3. Cuando esté listo, pulsa **Connect**. Ahí verás estos datos; cópialos en un lugar seguro:
+   - **HOST** (algo como `gateway01.us-west-2.prod.aws.tidbcloud.com`)
+   - **PORT** (normalmente `4000`)
+   - **USERNAME** (algo como `2abcDEF123.root`)
+   - **PASSWORD**: pulsa **Generate Password** y guárdala; no la vuelven a mostrar.
 
-1. Ve a la pestaña **Databases**.
-2. Escribe una contraseña para MySQL y pulsa **Initialize MySQL**. Guárdala; es `TU_CLAVE_MYSQL`.
-3. En *Create a database* escribe `kitty_maths` y pulsa **Create**. Queda como `TU_USUARIO$kitty_maths`.
+No tienes que cargar nada a mano: Render crea la base `kitty_maths`, las tablas, los temas
+y los usuarios de prueba automáticamente la primera vez.
 
-### 3. Descargar el proyecto
+### 2. Publicar la página en Render
 
-En la pestaña **Consoles** abre una consola **Bash** y ejecuta:
+1. Regístrate en <https://render.com> con **tu cuenta de GitHub** (así Render puede ver el repositorio).
+2. Pulsa **New** → **Blueprint**.
+3. Elige el repositorio **kitty-maths**. Render lee el archivo `render.yaml` del proyecto.
+4. Te pedirá tres datos de TiDB. Pégalos:
+   - `MYSQL_HOST` → el HOST
+   - `MYSQL_USER` → el USERNAME
+   - `MYSQL_PASSWORD` → la PASSWORD
+5. Pulsa **Apply** (o **Deploy Blueprint**) y espera unos minutos.
+   En los registros (**Logs**) debe aparecer `Base de datos lista.` y luego `Your service is live`.
+6. Arriba a la izquierda aparece el enlace de tu página. ¡Ese es el que compartes!
 
-```bash
-git clone https://github.com/Karrren/kitty-maths.git
-cd kitty-maths
-python3.13 -m venv venv
-source venv/bin/activate
-pip install -r kitty_maths/requirements.txt
-```
+### 3. Muy importante: cambia la contraseña del docente
 
-### 4. Cargar las tablas y los usuarios de prueba
-
-En la misma consola (te pedirá `TU_CLAVE_MYSQL`):
-
-```bash
-sed '/^CREATE DATABASE/d;/^USE /d' database.sql | mysql -u TU_USUARIO -h TU_USUARIO.mysql.pythonanywhere-services.com -p 'TU_USUARIO$kitty_maths'
-```
-
-Después crea los usuarios de prueba:
-
-```bash
-cd kitty_maths
-MYSQL_HOST=TU_USUARIO.mysql.pythonanywhere-services.com MYSQL_USER=TU_USUARIO MYSQL_PASSWORD='TU_CLAVE_MYSQL' MYSQL_DB='TU_USUARIO$kitty_maths' python crear_usuarios.py
-```
-
-### 5. Crear la web app
-
-1. Pestaña **Web** → **Add a new web app** → **Next**.
-2. Elige **Manual configuration** (no "Flask") → **Python 3.13** → **Next**.
-3. En la sección **Virtualenv** escribe: `/home/TU_USUARIO/kitty-maths/venv`
-4. En **Static files** agrega: URL `/static/` → Directory `/home/TU_USUARIO/kitty-maths/kitty_maths/app/static`
-5. Abre el enlace **WSGI configuration file**, borra todo su contenido y pega el de
-   [`kitty_maths/wsgi_pythonanywhere.py`](kitty_maths/wsgi_pythonanywhere.py), cambiando
-   `TU_USUARIO`, `TU_CLAVE_MYSQL` y la `SECRET_KEY`. Guarda.
-6. Vuelve a la pestaña **Web** y pulsa el botón verde **Reload**.
-
-Listo: la página queda en `https://TU_USUARIO.pythonanywhere.com`.
-
-### Si ya habías creado la base con una versión anterior
-
-Las tablas de videos y retroalimentación son nuevas. Créalas una sola vez con:
-
-```bash
-mysql -u TU_USUARIO -h TU_USUARIO.mysql.pythonanywhere-services.com -p 'TU_USUARIO$kitty_maths' < kitty_maths/actualizar_bd.sql
-```
+La pantalla de inicio muestra los usuarios de prueba con la contraseña `kitty123`.
+Entra como `docente@kittymaths.com`, ve a **Panel docente → Docentes** y cámbiale la contraseña.
+Así nadie más puede entrar como docente. (Volver a desplegar no la regresa a `kitty123`.)
 
 ### Actualizar la página después de hacer cambios
 
-Sube los cambios a GitHub y luego, en una consola Bash de PythonAnywhere:
+Sube los cambios a GitHub (`git push`). Render los detecta y vuelve a publicar la página solo.
 
-```bash
-cd ~/kitty-maths
-git pull
-```
+### Si algo falla
 
-y pulsa **Reload** en la pestaña **Web**.
-
-Si algo falla, el **Error log** (pestaña *Web*) dice qué pasó.
+- En Render abre tu servicio → **Logs** y mira las últimas líneas en rojo.
+- `Access denied`: revisa `MYSQL_USER` y `MYSQL_PASSWORD` en **Environment** (sin espacios al inicio o al final).
+- `Can't connect` o `timed out`: revisa `MYSQL_HOST`, y en TiDB que el clúster tenga el
+  **Public Endpoint** activo y que permita conexiones desde cualquier IP.
 
 ---
 
 ## Correrla en tu computador
 
-1. Crea la base con `database.sql` en tu MySQL local.
-2. Copia `kitty_maths/.env.example` como `kitty_maths/.env` y pon tu contraseña de MySQL.
-3. Instala las dependencias y crea los usuarios de prueba:
+1. Copia `kitty_maths/.env.example` como `kitty_maths/.env` y pon tu contraseña de MySQL.
+2. Instala las dependencias, prepara la base (tablas, temas y usuarios de prueba) y arranca la app:
 
    ```bash
    python -m venv venv
    venv\Scripts\activate
    pip install -r kitty_maths/requirements.txt
    cd kitty_maths
-   python crear_usuarios.py
+   python inicializar_bd.py
    python run.py
    ```
 
-4. Abre <http://localhost:5000>.
+3. Abre <http://localhost:5000>.
 
 La conexión a MySQL se configura en `kitty_maths/.env` (no se sube a GitHub) o con las variables de entorno
-`MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DB` y `SECRET_KEY`.
+`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DB`, `MYSQL_SSL` y `SECRET_KEY`.
 
 Usuarios de prueba: `estudiante@kittymaths.com` y `docente@kittymaths.com`, contraseña `kitty123`.

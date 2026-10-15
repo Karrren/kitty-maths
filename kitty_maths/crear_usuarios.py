@@ -1,36 +1,34 @@
 """
-Ejecuta este script UNA SOLA VEZ despues de importar database.sql
-para crear los usuarios de prueba.
+Crea los usuarios de prueba (estudiante y docente, contraseña kitty123).
+Si ya existen no los toca, así que no cambia una contraseña que ya hayas cambiado.
 
 Comando: python crear_usuarios.py
 """
 from werkzeug.security import generate_password_hash
 import mysql.connector
-from config import Config
+from config import parametros_mysql
 
-conn = mysql.connector.connect(
-    host=Config.MYSQL_HOST,
-    user=Config.MYSQL_USER,
-    password=Config.MYSQL_PASSWORD,
-    database=Config.MYSQL_DB,
-    charset='utf8mb4'
-)
-cur = conn.cursor()
-
-usuarios = [
-    ('Estudiante Demo',  'estudiante@kittymaths.com', generate_password_hash('kitty123'), 'estudiante'),
-    ('Docente Demo',     'docente@kittymaths.com',    generate_password_hash('kitty123'), 'docente'),
+USUARIOS_DEMO = [
+    ('Estudiante Demo', 'estudiante@kittymaths.com', 'estudiante'),
+    ('Docente Demo',    'docente@kittymaths.com',    'docente'),
 ]
 
-for nombre, email, pw_hash, rol in usuarios:
-    cur.execute("""
-        INSERT INTO usuarios (nombre, email, password_hash, rol)
-        VALUES (%s, %s, %s, %s)
-        ON DUPLICATE KEY UPDATE nombre = nombre
-    """, (nombre, email, pw_hash, rol))
-    print(f"  ✓ {rol}: {email}")
 
-conn.commit()
-cur.close()
-conn.close()
-print("\nUsuarios creados. Contraseña de ambos: kitty123")
+def crear_usuarios_demo(cur):
+    for nombre, email, rol in USUARIOS_DEMO:
+        cur.execute("""
+            INSERT INTO usuarios (nombre, email, password_hash, rol)
+            VALUES (%s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE nombre = nombre
+        """, (nombre, email, generate_password_hash('kitty123'), rol))
+        print(f"  - {rol}: {email}")
+
+
+if __name__ == '__main__':
+    conn = mysql.connector.connect(**parametros_mysql())
+    cur = conn.cursor()
+    crear_usuarios_demo(cur)
+    conn.commit()
+    cur.close()
+    conn.close()
+    print("\nUsuarios listos. Contraseña de ambos: kitty123")

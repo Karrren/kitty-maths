@@ -1,17 +1,11 @@
 from flask import Flask
 import mysql.connector
-from config import Config
+from config import Config, parametros_mysql
 
 def get_db():
     from flask import g
     if 'db' not in g:
-        g.db = mysql.connector.connect(
-            host=Config.MYSQL_HOST,
-            user=Config.MYSQL_USER,
-            password=Config.MYSQL_PASSWORD,
-            database=Config.MYSQL_DB,
-            charset='utf8mb4'
-        )
+        g.db = mysql.connector.connect(**parametros_mysql())
     return g.db
 
 def create_app():
